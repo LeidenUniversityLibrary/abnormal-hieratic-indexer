@@ -30,7 +30,7 @@ canvas_pages = {}
 
 
 def parse_manifest(uri: str):
-    LOGGER.info("Parsing {}".format(uri))
+    LOGGER.info("Parsing manifest {}".format(uri))
     manifest = SESSION.get(uri).json()
     manifest_labels[uri] = manifest["label"]
     for seq in manifest["sequences"]:
