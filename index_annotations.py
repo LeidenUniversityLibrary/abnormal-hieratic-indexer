@@ -16,7 +16,7 @@ SESSION = requests.Session()
 ANNOTATED_BY = "dcterms:creator"
 ANNOTATOR_NAME = "foaf:name"
 
-LOGGER = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__file__)
 LOGGER.setLevel(logging.DEBUG)
 LOG_HANDLER = logging.StreamHandler(sys.stdout)
 LOG_HANDLER.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
