@@ -75,6 +75,7 @@ def convert_annotation(annotation):
     # Find annotation ID
     # 'https://iiif.universiteitleiden.nl/anno/annotation/1540300675536' => 1540300675536
     record["id"] = annotation["@id"].replace(OA_ANNOTATIONS_URI, "")
+    record["uri"] = annotation["@id"]
     chars = annotation["resource"][0]["chars"]
     soup = BeautifulSoup(chars, "html.parser")
 
