@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup, NavigableString
 import logging, sys
 
 ES_ENDPOINT = "http://localhost:9200"
-SAS_ENDPOINT = "https://iiif.universiteitleiden.nl/anno/annotation"
+SAS_ENDPOINT = "https://lab.library.universiteitleiden.nl/anno/annotation"
 OA_ANNOTATIONS_URI = SAS_ENDPOINT + "/"
 SESSION = requests.Session()
 
@@ -141,7 +141,7 @@ def index_annotation_record(record):
 
 
 def main():
-    annos = find_annotations("https://iiif.universiteitleiden.nl/manifests/external/louvre/")
+    annos = find_annotations("https://lab.library.universiteitleiden.nl/manifests/external/louvre/")
     for anno in annos:
         rec = convert_annotation(anno)
         index_annotation_record(rec)
