@@ -1,49 +1,46 @@
 # Abnormal Hieratic Indexer
 
-Script that indexes annotations in the Abnormal Hieratic Global Portal. This script is specifically
-tailored towards the annotations created for the AHGP.
+Script that indexes annotations in the [Abnormal Hieratic Global Portal][ahgp].
+This script is specifically tailored towards the annotations created for the AHGP.
 
-Annotations in the AHGP are stored in a [Simple Annotation Server][sas], but for search we use [Elasticsearch][es].
+Annotations in the AHGP are stored in a [Simple Annotation Server][sas],
+but for search we use [Elasticsearch][es].
 
+[ahgp]: https://lab.library.universiteitleiden.nl/abnormalhieratic/
 [sas]: https://github.com/glenrobson/SimpleAnnotationServer
 [es]: https://www.elastic.co/guide/en/elasticsearch/
 
 ## Installation
 
-This script was developed with Python 3.6+. It may run on other versions, but this is not tested.
+This script was developed with Python 3.9. It may run on other versions, but tests are very limited.
 
-The indexer depends on [requests][] and [beautifulsoup4][], both of which may be installed with `pip` or `pip3` (depending on your system).
-On some Linux distributions they may instead be available as packages for your package manager.
-
-```
-pip install requests beautifulsoup4
-```
-
-[requests]: https://2.python-requests.org//en/master/
-[beautifulsoup4]: https://www.crummy.com/software/BeautifulSoup/
+To install, run `pip install abnormal-hieratic-indexer` in your environment.
 
 ## Usage
 
-Currently all information needed to run is defined within the script.
-This includes the endpoint of the ElasticSearch server and
-the base URL of the SimpleAnnotationServer endpoint.
-If you need to adjust these settings, modify the script.
+```
+$ abhier-indexer -h
+usage: abhier-indexer [-h] [--canvas-uri-prefix CANVAS_URI_PREFIX] [--index INDEX] source target
+
+positional arguments:
+  source                Base URL for the Simple Annotation Server
+  target                Base URL for ElasticSearch (default: http://localhost:9200)
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --canvas-uri-prefix CANVAS_URI_PREFIX
+                        Index only annotations targeting canvases whose URIs start with this prefix (default:
+                        https://lab.library.universiteitleiden.nl/manifests/external/louvre/)
+  --index INDEX         URI path to the ElasticSearch index (default: /annotations/anno/)
+```
 
 To enable periodic indexing, you can set up a cronjob or Systemd timer.
 
-### cronjob
-
-This is an example cronjob that uses the Red Hat software collection for Python 3.6 and saves standard out and standard error streams to files. (Note that cronjobs need to escape the `%` in file names, whereas in shell scripts the extra backslashes do not work.)
-
-```
-33 8,12,16,20 * * * scl enable rh-python36 'python /home/beheer/index_annotations.py' > "/var/log/anno-index/indexing_$(date '+\%Y\%m\%d\%H\%M').log" 2> "/var/log/anno-index/error_$(date '+\%Y\%m\%d\%H\%M').log"
-```
-
 # Author and license
 
-Abnormal Hieratic Indexer has been created by Ben Companjen at the Centre for Digital Scholarship.
+Abnormal Hieratic Indexer was created by Ben Companjen at the Centre for Digital Scholarship.
 
-© 2019 Leiden University Libraries
+© 2024 Leiden University Libraries
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
