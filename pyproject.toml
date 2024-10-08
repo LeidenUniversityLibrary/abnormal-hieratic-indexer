@@ -23,8 +23,8 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
-  "beautifulsoup4",
-  "requests",
+  "beautifulsoup4~=4.12.3",
+  "requests~=2.32.3",
 ]
 version = "0.8.0"
 
