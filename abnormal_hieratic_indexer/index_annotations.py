@@ -6,7 +6,7 @@
 import requests
 import json
 from bs4 import BeautifulSoup, NavigableString
-import logging, sys
+import logging
 
 ES_ENDPOINT = "http://localhost:9200"
 SAS_ENDPOINT = "https://lab.library.universiteitleiden.nl/anno/annotation"
@@ -18,7 +18,7 @@ ANNOTATOR_NAME = "foaf:name"
 
 LOGGER = logging.getLogger(__file__)
 LOGGER.setLevel(logging.DEBUG)
-LOG_HANDLER = logging.StreamHandler(sys.stdout)
+LOG_HANDLER = logging.StreamHandler()
 LOG_HANDLER.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
 LOGGER.addHandler(LOG_HANDLER)
 
