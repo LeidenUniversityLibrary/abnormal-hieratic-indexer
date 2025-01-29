@@ -8,7 +8,6 @@ on:
       - 'v*'
     branches:
       - 'main'
-      - 'push*'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
