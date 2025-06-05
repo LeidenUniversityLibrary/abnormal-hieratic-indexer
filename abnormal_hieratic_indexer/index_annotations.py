@@ -41,12 +41,12 @@ class Indexer:
         self.manifest_labels[uri] = manifest["label"]
         for seq in manifest["sequences"]:
             for canvas in seq["canvases"]:
-                canvas_labels[canvas["@id"]] = canvas["label"]
-                canvas_images[canvas["@id"]] = {"base": canvas["images"][0]["resource"]["service"]["@id"],
-                                                "h": canvas["images"][0]["resource"]["height"],
-                                                "w": canvas["images"][0]["resource"]["width"],
-                                                "h_ratio": canvas["height"] / canvas["images"][0]["resource"]["height"],
-                                                "v_ratio": canvas["width"] / canvas["images"][0]["resource"]["width"]}
+                self.canvas_labels[canvas["@id"]] = canvas["label"]
+                self.canvas_images[canvas["@id"]] = {"base": canvas["images"][0]["resource"]["service"]["@id"],
+                                                     "h": canvas["images"][0]["resource"]["height"],
+                                                     "w": canvas["images"][0]["resource"]["width"],
+                                                     "h_ratio": canvas["height"] / canvas["images"][0]["resource"]["height"],
+                                                     "v_ratio": canvas["width"] / canvas["images"][0]["resource"]["width"]}
                 for related in canvas.get("related"):
                     if related["label"] == "Abnormal Hieratic Global Portal":
                         self.canvas_pages[canvas["@id"]] = related["@id"]
