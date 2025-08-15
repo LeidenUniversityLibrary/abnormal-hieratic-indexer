@@ -140,7 +140,7 @@ class Indexer:
     def index_annotation_record(self, record):
         self.LOGGER.info("Updating %s", record["id"])
 
-        res = self.SESSION.put(self.ES_ENDPOINT + self.ES_INDEX + "_doc/" + record["id"], json=record)
+        res = self.SESSION.put(self.ES_ENDPOINT + self.ES_INDEX + "_doc/" + requests.utils.quote(record["id"], safe=''), json=record)
         self.LOGGER.info("Update returned status: %s", res.status_code)
         self.LOGGER.debug(res.json())
         res.raise_for_status()
