@@ -140,7 +140,7 @@ class Indexer:
     def index_annotation_record(self, record):
         self.LOGGER.info("Updating %s", record["id"])
 
-        res = self.SESSION.put(self.ES_ENDPOINT + self.ES_INDEX + record["id"], json=record)
+        res = self.SESSION.put(self.ES_ENDPOINT + self.ES_INDEX + "_doc/" + record["id"], json=record)
         self.LOGGER.info("Update returned status: %s", res.status_code)
         self.LOGGER.debug(res.json())
         res.raise_for_status()
@@ -160,7 +160,7 @@ def main():
     parser.add_argument("target", help="Base URL for ElasticSearch (default: %(default)s)", default="http://localhost:9200")
     parser.add_argument("--canvas-uri-prefix", help="Index only annotations targeting canvases whose URIs start with this prefix (default: %(default)s)",
     default="https://lab.library.universiteitleiden.nl/manifests/external/louvre/")
-    parser.add_argument("--index", help="URI path to the ElasticSearch index (default: %(default)s)", default="/annotations/anno/")
+    parser.add_argument("--index", help="URI path to the ElasticSearch index (default: %(default)s)", default="/annotations/")
     args = parser.parse_args()
     indexer = Indexer(args)
     indexer.run()

@@ -27,7 +27,7 @@ dependencies = [
   "beautifulsoup4~=4.12.3",
   "requests~=2.32.3",
 ]
-version = "1.0.2"
+version = "1.1.0"
 
 [project.urls]
 Documentation = "https://github.com/LeidenUniversityLibrary/abnormal-hieratic-indexer#readme"
