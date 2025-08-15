@@ -31,7 +31,7 @@ optional arguments:
   --canvas-uri-prefix CANVAS_URI_PREFIX
                         Index only annotations targeting canvases whose URIs start with this prefix (default:
                         https://lab.library.universiteitleiden.nl/manifests/external/louvre/)
-  --index INDEX         URI path to the ElasticSearch index (default: /annotations/anno/)
+  --index INDEX         URI path to the ElasticSearch index (default: /annotations/)
 ```
 
 To enable periodic indexing, you can set up a cronjob or Systemd timer.
