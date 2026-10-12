@@ -59,13 +59,20 @@ class Indexer:
 
 
     def find_annotations(self):
-        annotation_list = self.SESSION.get(self.OA_ANNOTATIONS_URI).json()
+        annotation_list_resp = self.SESSION.get(self.OA_ANNOTATIONS_URI)
+        annotation_list_resp.raise_for_status()
+        annotation_list = annotation_list_resp.json()
         if self.canvas_filter is None or self.canvas_filter == "":
             self.LOGGER.debug("Not filtering annotations")
             annotations = annotation_list["resources"]
         else:
             self.LOGGER.debug("Filtering annotations")
-            annotations = [x for x in annotation_list["resources"] if self.canvas_filter in x["on"][0]["full"]]
+            annotations = []
+            for anno in annotation_list["resources"]:
+                if isinstance(anno["on"], list) and self.canvas_filter in anno["on"][0]["full"]:
+                    annotations.append(anno)
+                elif isinstance(anno["on"], dict) and self.canvas_filter in anno["on"]["full"]:
+                    annotations.append(anno)
         self.LOGGER.info("Found {} annotations".format(len(annotations)))
         return annotations
 
