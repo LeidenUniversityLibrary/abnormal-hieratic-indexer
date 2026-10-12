@@ -59,13 +59,20 @@ class Indexer:
 
 
     def find_annotations(self):
-        annotation_list = self.SESSION.get(self.OA_ANNOTATIONS_URI).json()
+        annotation_list_resp = self.SESSION.get(self.OA_ANNOTATIONS_URI)
+        annotation_list_resp.raise_for_status()
+        annotation_list = annotation_list_resp.json()
         if self.canvas_filter is None or self.canvas_filter == "":
             self.LOGGER.debug("Not filtering annotations")
             annotations = annotation_list["resources"]
         else:
             self.LOGGER.debug("Filtering annotations")
-            annotations = [x for x in annotation_list["resources"] if self.canvas_filter in x["on"][0]["full"]]
+            annotations = []
+            for anno in annotation_list["resources"]:
+                if isinstance(anno["on"], list) and self.canvas_filter in anno["on"][0]["full"]:
+                    annotations.append(anno)
+                elif isinstance(anno["on"], dict) and self.canvas_filter in anno["on"]["full"]:
+                    annotations.append(anno)
         self.LOGGER.info("Found {} annotations".format(len(annotations)))
         return annotations
 
@@ -114,24 +121,29 @@ class Indexer:
             record["modified"] = annotation["dcterms:modified"]
 
         # Find manifest, canvas with labels
-        for target in annotation["on"]:
-            if target["@type"] == "oa:SpecificResource" and "within" in target:
-                if isinstance(target["within"], str):
-                    record["manifest"] = target["within"]
-                else:
-                    record["manifest"] = target["within"]["@id"]
-                record["manifest_label"] = self.get_manifest_label(record["manifest"])
-                record["canvas"] = target["full"]
-                record["canvas_label"] = self.canvas_labels[target["full"]]
-                record["portal_url"] = self.canvas_pages[target["full"]]
+        if isinstance(annotation["on"], list):
+            target = annotation["on"][0]
+        elif isinstance(annotation["on"], dict):
+            target = annotation["on"]
+        else:
+            raise NotImplementedError("Annotation target is not a list or dict")
+        if target["@type"] == "oa:SpecificResource" and "within" in target:
+            if isinstance(target["within"], str):
+                record["manifest"] = target["within"]
+            else:
+                record["manifest"] = target["within"]["@id"]
+            record["manifest_label"] = self.get_manifest_label(record["manifest"])
+            record["canvas"] = target["full"]
+            record["canvas_label"] = self.canvas_labels[target["full"]]
+            record["portal_url"] = self.canvas_pages[target["full"]]
 
-                # Find coordinates; FIXME in case of non-choice
-                record["xywh"] = target["selector"]["default"]["value"].replace("xywh=", "")
-                record["x"], record["y"], record["w"], record["h"] = record["xywh"].split(",")
+            # Find coordinates; FIXME in case of non-choice
+            record["xywh"] = target["selector"]["default"]["value"].replace("xywh=", "")
+            record["x"], record["y"], record["w"], record["h"] = record["xywh"].split(",")
 
-                # Find image URLs
-                record["image_base_url"] = self.canvas_images[target["full"]]["base"]
-                record["image_full_url"] = record["image_base_url"] + "/" + record["xywh"] + "/full/0/default.jpg"
+            # Find image URLs
+            record["image_base_url"] = self.canvas_images[target["full"]]["base"]
+            record["image_full_url"] = record["image_base_url"] + "/" + record["xywh"] + "/full/0/default.jpg"
 
         self.LOGGER.debug(json.dumps(record, indent=2))
         return record
