@@ -121,24 +121,29 @@ class Indexer:
             record["modified"] = annotation["dcterms:modified"]
 
         # Find manifest, canvas with labels
-        for target in annotation["on"]:
-            if target["@type"] == "oa:SpecificResource" and "within" in target:
-                if isinstance(target["within"], str):
-                    record["manifest"] = target["within"]
-                else:
-                    record["manifest"] = target["within"]["@id"]
-                record["manifest_label"] = self.get_manifest_label(record["manifest"])
-                record["canvas"] = target["full"]
-                record["canvas_label"] = self.canvas_labels[target["full"]]
-                record["portal_url"] = self.canvas_pages[target["full"]]
+        if isinstance(annotation["on"], list):
+            target = annotation["on"][0]
+        elif isinstance(annotation["on"], dict):
+            target = annotation["on"]
+        else:
+            raise NotImplementedError("Annotation target is not a list or dict")
+        if target["@type"] == "oa:SpecificResource" and "within" in target:
+            if isinstance(target["within"], str):
+                record["manifest"] = target["within"]
+            else:
+                record["manifest"] = target["within"]["@id"]
+            record["manifest_label"] = self.get_manifest_label(record["manifest"])
+            record["canvas"] = target["full"]
+            record["canvas_label"] = self.canvas_labels[target["full"]]
+            record["portal_url"] = self.canvas_pages[target["full"]]
 
-                # Find coordinates; FIXME in case of non-choice
-                record["xywh"] = target["selector"]["default"]["value"].replace("xywh=", "")
-                record["x"], record["y"], record["w"], record["h"] = record["xywh"].split(",")
+            # Find coordinates; FIXME in case of non-choice
+            record["xywh"] = target["selector"]["default"]["value"].replace("xywh=", "")
+            record["x"], record["y"], record["w"], record["h"] = record["xywh"].split(",")
 
-                # Find image URLs
-                record["image_base_url"] = self.canvas_images[target["full"]]["base"]
-                record["image_full_url"] = record["image_base_url"] + "/" + record["xywh"] + "/full/0/default.jpg"
+            # Find image URLs
+            record["image_base_url"] = self.canvas_images[target["full"]]["base"]
+            record["image_full_url"] = record["image_base_url"] + "/" + record["xywh"] + "/full/0/default.jpg"
 
         self.LOGGER.debug(json.dumps(record, indent=2))
         return record
